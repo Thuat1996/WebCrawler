@@ -1,10 +1,17 @@
 package com.udacity.webcrawler.profiler;
 
 import javax.inject.Inject;
+import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -25,29 +32,42 @@ final class ProfilerImpl implements Profiler {
     this.clock = Objects.requireNonNull(clock);
     this.startTime = ZonedDateTime.now(clock);
   }
-
+  boolean isProfiledMethod(Class<?> klass) {
+    if(klass.getMethods().length == 0) return false;
+    for(Method method: klass.getDeclaredMethods()) {
+      if (method.getAnnotation(Profiled.class) != null) {
+        return true;
+      }
+    }
+    return false;
+  }
   @Override
   public <T> T wrap(Class<T> klass, T delegate) {
-    Objects.requireNonNull(klass);
-
     // TODO: Use a dynamic proxy (java.lang.reflect.Proxy) to "wrap" the delegate in a
     //       ProfilingMethodInterceptor and return a dynamic proxy from this method.
     //       See https://docs.oracle.com/javase/10/docs/api/java/lang/reflect/Proxy.html.
-    //check @profiled
-    for(Method method: klass.getDeclaredMethods()){
-      if (method.getAnnotation(Profiled.class) == null) {
-        throw new IllegalArgumentException("No have profiled method");
-      } else {
-        //Doing
+      if (!isProfiledMethod(klass)) {
+        throw new IllegalArgumentException("No include a profile method !!!!!");
       }
-    }
-    return delegate;
+      Objects.requireNonNull(klass);
+      InvocationHandler handler = new ProfilingMethodInterceptor(clock, (Objects) delegate,state);
+      T proxy = (T) Proxy.newProxyInstance(klass.getClassLoader(),
+              new Class[]{klass},
+              handler);
+      return proxy;
   }
 
   @Override
   public void writeData(Path path) {
     // TODO: Write the ProfilingState data to the given file path. If a file already exists at that
     //       path, the new data should be appended to the existing file.
+    Objects.requireNonNull(path);
+    try {
+      Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+      writeData(writer);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
