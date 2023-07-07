@@ -48,6 +48,7 @@ final class ParallelWebCrawler implements WebCrawler {
     this.ignoredUrls = ignoredUrls;
   }
 
+  //Base on SequentialWebCrawler.java
   @Override
   public CrawlResult crawl(List<String> startingUrls) {
     Instant deadline = clock.instant().plus(timeout);

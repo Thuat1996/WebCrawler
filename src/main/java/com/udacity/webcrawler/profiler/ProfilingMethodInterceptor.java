@@ -15,12 +15,12 @@ import java.util.Objects;
 final class ProfilingMethodInterceptor implements InvocationHandler {
 
   private final Clock clock;
-  private final Objects delegate;
+  private final Object delegate;
   private final ProfilingState state;
 
   // TODO: You will need to add more instance fields and constructor arguments to this class.
 
-  ProfilingMethodInterceptor(Clock clock, Objects delegate, ProfilingState state) {
+  ProfilingMethodInterceptor(Clock clock, Object delegate, ProfilingState state) {
     this.clock = Objects.requireNonNull(clock);
     this.delegate = delegate;
     this.state = state;

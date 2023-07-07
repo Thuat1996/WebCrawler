@@ -47,10 +47,10 @@ final class ProfilerImpl implements Profiler {
     //       ProfilingMethodInterceptor and return a dynamic proxy from this method.
     //       See https://docs.oracle.com/javase/10/docs/api/java/lang/reflect/Proxy.html.
       if (!isProfiledMethod(klass)) {
-        throw new IllegalArgumentException("No include a profile method !!!!!");
+        throw new IllegalArgumentException("No include a profile method.");
       }
       Objects.requireNonNull(klass);
-      InvocationHandler handler = new ProfilingMethodInterceptor(clock, (Objects) delegate,state);
+      InvocationHandler handler = new ProfilingMethodInterceptor(clock,delegate,state);
       T proxy = (T) Proxy.newProxyInstance(klass.getClassLoader(),
               new Class[]{klass},
               handler);
