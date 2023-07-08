@@ -63,7 +63,7 @@ final class ProfilerImpl implements Profiler {
     //       path, the new data should be appended to the existing file.
     Objects.requireNonNull(path);
     try {
-      Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+      Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.CREATE ,StandardOpenOption.APPEND);
       writeData(writer);
     } catch (Exception e) {
       e.printStackTrace();
