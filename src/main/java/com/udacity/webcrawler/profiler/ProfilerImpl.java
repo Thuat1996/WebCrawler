@@ -65,6 +65,7 @@ final class ProfilerImpl implements Profiler {
     try {
       Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.CREATE ,StandardOpenOption.APPEND);
       writeData(writer);
+      writer.flush();
     } catch (Exception e) {
       e.printStackTrace();
     }
