@@ -32,7 +32,7 @@ final class ProfilerImpl implements Profiler {
     this.clock = Objects.requireNonNull(clock);
     this.startTime = ZonedDateTime.now(clock);
   }
-  boolean isProfiledMethod(Class<?> klass) {
+  public boolean isProfiledMethod(Class<?> klass) {
     if(klass.getMethods().length == 0) return false;
     for(Method method: klass.getDeclaredMethods()) {
       if (method.getAnnotation(Profiled.class) != null) {
@@ -61,6 +61,7 @@ final class ProfilerImpl implements Profiler {
   public void writeData(Path path) {
     // TODO: Write the ProfilingState data to the given file path. If a file already exists at that
     //       path, the new data should be appended to the existing file.
+    //fix bug under guidance of mentor https://knowledge.udacity.com/questions/994965
     Objects.requireNonNull(path);
     try {
       Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.CREATE ,StandardOpenOption.APPEND);
